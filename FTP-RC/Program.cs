@@ -12,25 +12,24 @@ namespace FTP_RC
     {
         static void Main(string[] args)
         {
-            // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://127.0.0.1/clients.txt");
-            request.Method = WebRequestMethods.Ftp.DownloadFile;
+            FTPClient ftpClient = new FTPClient("127.0.0.1", "root", "password");
+            ftpClient.upload(@"C:\Users\Nova\Documents\file.txt");
 
-            // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential("root", "password");
-
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-
-            Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
+            /* Download print up
+            StreamReader reader = ftpClient.download("clients.txt");
             Console.WriteLine(reader.ReadToEnd());
 
-            Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
+            Console.WriteLine("Download Complete, status {0}", ftpClient.response.StatusDescription);
 
             reader.Close();
-            response.Close();
+            ftpClient.response.Close();
 
             Console.ReadLine();
+            */
+
+            Console.ReadLine();
+
+
         }
     }
 }
