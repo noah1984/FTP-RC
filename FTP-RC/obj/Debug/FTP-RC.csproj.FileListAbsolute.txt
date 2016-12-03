@@ -1,0 +1,6 @@
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\bin\Debug\FTP-RC.exe.config
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\bin\Debug\FTP-RC.exe
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\bin\Debug\FTP-RC.pdb
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\obj\Debug\FTP-RC.csprojResolveAssemblyReference.cache
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\obj\Debug\FTP-RC.exe
+c:\users\nova\documents\visual studio 2015\Projects\FTP-RC\FTP-RC\obj\Debug\FTP-RC.pdb
