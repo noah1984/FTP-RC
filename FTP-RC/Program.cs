@@ -31,7 +31,8 @@ namespace FTP_RC
                 while (reader.Peek() >= 0)
                 {
                     string line = reader.ReadLine();
-                    if(line == Encryption.MyXOR(macAddress, "password"))
+                    Console.WriteLine("Found MAC " + Encryption.MyXOR(line, "password") + ", ENCRYPTED: " + line);
+                    if (line == Encryption.MyXOR(macAddress, "password"))
                     {
                         addClient = false;
                     }

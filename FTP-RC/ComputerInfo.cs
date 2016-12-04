@@ -11,20 +11,16 @@ namespace FTP_RC
     {
         public static string GetMacAddress()
         {
-            /*
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface adapter in nics)
             {
                 PhysicalAddress address = adapter.GetPhysicalAddress();
                 if (address.ToString().Length == 12)
                 {
-                    return "000000000000";
-                    //return address.ToString();
+                    return address.ToString();
                 }
             }
             return null;
-            */
-            return "000000000000";
         }
     }
 }
