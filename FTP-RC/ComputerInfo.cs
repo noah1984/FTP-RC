@@ -11,6 +11,7 @@ namespace FTP_RC
     {
         public static string GetMacAddress()
         {
+            /*
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface adapter in nics)
             {
@@ -22,6 +23,8 @@ namespace FTP_RC
                 }
             }
             return null;
+            */
+            return "000000000000";
         }
     }
 }
