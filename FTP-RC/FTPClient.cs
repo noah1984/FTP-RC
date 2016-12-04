@@ -12,39 +12,53 @@ namespace FTP_RC
     {
         public FtpWebResponse response { get; set; }
 
-        private string server;
-        private string username;
-        private string password;
+        private string _server;
+        private string _username;
+        private string _password;
 
         
 
         public FTPClient(string sentServer, string sentUsername, string sentPassword)
         {
-            server = sentServer;
-            username = sentUsername;
-            password = sentPassword;
+            _server = sentServer;
+            _username = sentUsername;
+            _password = sentPassword;
+        }
+        public StreamReader Download(string filename)
+        {
+            return Download(filename, 0);
         }
 
-        public StreamReader download(string filename)
+        public StreamReader Download(string filename, int offset)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + server + "/" + filename);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + _server + "/" + filename);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
+            if (offset > 0)
+            {
+                request.ContentOffset = offset;
+            }
+            request.Credentials = new NetworkCredential(_username, _password);
 
-            request.Credentials = new NetworkCredential(username, password);
-
-            response = (FtpWebResponse)request.GetResponse();
+            try
+            {
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch
+            {
+                return null;
+            }
 
             Stream responseStream = response.GetResponseStream();
             return new StreamReader(responseStream);
         }
 
-        public void upload(string filename)
+        public void Upload(string filename)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + server + "/" + Path.GetFileName(filename));
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + _server + "/" + Path.GetFileName(filename));
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential(username, password);
+            request.Credentials = new NetworkCredential(_username, _password);
 
             FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             FileInfo fInfo = new FileInfo(filename);
@@ -63,6 +77,32 @@ namespace FTP_RC
                 requestStream.Write(buffer, 0, buffer.Length);
             }
             
+            requestStream.Close();
+
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+
+            Console.WriteLine("Upload File Complete, status {0}", response.StatusDescription);
+
+            response.Close();
+        }
+
+        public void UploadText(string filename, string text)
+        {
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + _server + "/" + Path.GetFileName(filename));
+            request.Method = WebRequestMethods.Ftp.AppendFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential(_username, _password);
+
+
+            request.ContentLength = text.Length;
+
+            Stream requestStream = request.GetRequestStream();
+
+            byte[] strBytes = Encoding.ASCII.GetBytes(text);
+
+            requestStream.Write(strBytes, 0, strBytes.Length);
+
             requestStream.Close();
 
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
