@@ -31,7 +31,7 @@ namespace FTP_RC
                 while (reader.Peek() >= 0)
                 {
                     string line = reader.ReadLine();
-                    if(line == macAddress)
+                    if(line == Encryption.MyXOR(macAddress, "password"))
                     {
                         addClient = false;
                     }
@@ -45,7 +45,7 @@ namespace FTP_RC
             if(addClient)
             {
                 
-                ftpClient.UploadText("clients.txt", macAddress + "\n");
+                ftpClient.UploadText("clients.txt", Encryption.MyXOR(macAddress, "password") + "\n");
                 //Console.WriteLine("No file.");
             }
             long position = 0;
