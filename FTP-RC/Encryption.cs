@@ -127,6 +127,10 @@ namespace FTP_RC
             keyFromPassword = new PasswordDeriveBytes(password, extraSalt);
             // Set the byte array of key from password (now with salt)
             keyBytes = keyFromPassword.GetBytes(KEY_SIZE / 8);
+            // Set cryptographic encryption transformer to use modified key bytes
+            encryptor = rijndael.CreateEncryptor(keyBytes, IV_Bytes);
+            // Set cryptographic decryption transformer to use modified key bytes
+            decryptor = rijndael.CreateDecryptor(keyBytes, IV_Bytes);
         }
     }
 }
