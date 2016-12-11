@@ -1,103 +1,50 @@
-﻿using System;
+// FTP-RC: Control your PC from your phone
+// Copyright (C) 2016 Noah Allen
+//
+// FTP-RC is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// FTP-RC is distributed in the hope that it will be useful, but 
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see http://www.gnu.org/licenses/.
+
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace FTP_RC
 {
+    // This class contains methods pertaining to capturing a screenshot from the machine
     public static class Screenshot
     {
-        [DllImport("GDI32.dll")]
-        private static extern bool BitBlt(int hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, int hdcSrc, int nXSrc, int nYSrc, int dwRop);
-        [DllImport("GDI32.dll")]
-        private static extern int CreateCompatibleBitmap(int hdc, int nWidth, int nHeight);
-        [DllImport("GDI32.dll")]
-        private static extern int CreateCompatibleDC(int hdc);
-        [DllImport("GDI32.dll")]
-        private static extern bool DeleteDC(int hdc);
-        [DllImport("GDI32.dll")]
-        private static extern bool DeleteObject(int hObject);
-        [DllImport("GDI32.dll")]
-        private static extern int GetDeviceCaps(int hdc, int nIndex);
-        [DllImport("GDI32.dll")]
-        private static extern int SelectObject(int hdc, int hgdiobj);
-        [DllImport("User32.dll")]
-        private static extern int GetDesktopWindow();
-        [DllImport("User32.dll")]
-        private static extern int GetWindowDC(int hWnd);
-        [DllImport("User32.dll")]
-        private static extern int ReleaseDC(int hWnd, int hDC);
-
-        public static MemoryStream CaptureScreen(ImageFormat imageFormat, int MaxSideSize)
+        // Capture a screenshot from the machine and returns it as a MemoryStram in the JPEG image format
+        // This method supports capturing one screenshot containing the image from multiple displays (monitors)
+        public static MemoryStream CaptureScreen()
         {
-            int hdcSrc = GetWindowDC(GetDesktopWindow()),
-            hdcDest = CreateCompatibleDC(hdcSrc),
-            hBitmap = CreateCompatibleBitmap(hdcSrc, GetDeviceCaps(hdcSrc, 8), GetDeviceCaps(hdcSrc, 10));
-            SelectObject(hdcDest, hBitmap);
-            BitBlt(hdcDest, 0, 0, GetDeviceCaps(hdcSrc, 8),
-            GetDeviceCaps(hdcSrc, 10), hdcSrc, 0, 0, 0x00CC0020);
-            MemoryStream returnme = SaveImageAs(hBitmap, imageFormat, MaxSideSize);
-            Cleanup(hBitmap, hdcSrc, hdcDest);
-            return returnme;
-        }
-        private static MemoryStream SaveImageAs(int hBitmap, ImageFormat imageFormat, int MaxSideSize)
-        {
-            MemoryStream returnme = new MemoryStream();
-            int intNewWidth;
-            int intNewHeight;
-            Image imgInput = Image.FromHbitmap(new IntPtr(hBitmap));
-
-            //get image original width and height
-            int intOldWidth = imgInput.Width;
-            int intOldHeight = imgInput.Height;
-
-            //determine if landscape or portrait
-            int intMaxSide;
-
-            if (intOldWidth >= intOldHeight)
-            {
-                intMaxSide = intOldWidth;
-            }
-            else
-            {
-                intMaxSide = intOldHeight;
-            }
-
-
-            if (intMaxSide > MaxSideSize)
-            {
-                //set new width and height
-                double dblCoef = MaxSideSize / (double)intMaxSide;
-                intNewWidth = Convert.ToInt32(dblCoef * intOldWidth);
-                intNewHeight = Convert.ToInt32(dblCoef * intOldHeight);
-            }
-            else
-            {
-                intNewWidth = intOldWidth;
-                intNewHeight = intOldHeight;
-            }
-            //create new bitmap
-            Bitmap bmpResized = new Bitmap(imgInput, intNewWidth, intNewHeight);
-
-            //           byte[] buffer;
-            //save bitmap to disk
-            bmpResized.Save(returnme, imageFormat);
-
-            //release used resources
-            imgInput.Dispose();
-            bmpResized.Dispose();
-            return returnme;
-        }
-        private static void Cleanup(int hBitmap, int hdcSrc, int hdcDest)
-        {
-            ReleaseDC(GetDesktopWindow(), hdcSrc);
-            DeleteDC(hdcDest);
-            DeleteObject(hBitmap);
+            // Create Bitmap object to store the screenshot with the dimensions of all screens (monitors) on the machine
+            Bitmap bitmapOfScreen = new Bitmap(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+            // Create Graphics object  and pass in the Bitmap object (which will be modified by reference) 
+            Graphics screenGraphics = Graphics.FromImage(bitmapOfScreen);
+            // Capture the screenshot and transfer it into the Graphics object (which modifies the Bitmap object by reference)
+            screenGraphics.CopyFromScreen(SystemInformation.VirtualScreen.Left, SystemInformation.VirtualScreen.Top, 0, 0, bitmapOfScreen.Size);
+            // Create MemoryStream for use in return data from the method
+            MemoryStream memoryStream = new MemoryStream();
+            // Copy the screenshot into "msScreens" as a JPEG image
+            bitmapOfScreen.Save(memoryStream, ImageFormat.Jpeg);
+            // Return the MemoryStream containing the screenshot
+            return memoryStream;
         }
     }
 }
