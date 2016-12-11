@@ -1,5 +1,5 @@
-// FTP-RC: Control your PC from your phone
 // Copyright (C) 2016 Noah Allen
+// This file is part of FTP-RC
 //
 // FTP-RC is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by
@@ -92,13 +92,13 @@ namespace FTP_RC
             // Create CryptoStream for use in decrypting the data from cipher
             CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             // Read the decrypted data from the stream
-            int decryptedByteCount = cryptoStream.Read(decryptedData, 0, decryptedData.Length);
+            int decryptedBytesCount = cryptoStream.Read(decryptedData, 0, decryptedData.Length);
             // Free the resources used by the CryptoStream
             cryptoStream.Dispose();
             // Free the resources used by the MemoryStream
             memoryStream.Dispose();
             // Declare byte array to hold decrypted data - salt
-            byte[] unsaltedData = new byte[decryptedByteCount - SALT_SIZE];
+            byte[] unsaltedData = new byte[decryptedBytesCount - SALT_SIZE];
             // Copy decrypted data into new array
             Buffer.BlockCopy(decryptedData, 0, unsaltedData, 0, unsaltedData.Length);
             // Return decrypted data

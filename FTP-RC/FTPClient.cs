@@ -1,5 +1,5 @@
-// FTP-RC: Control your PC from your phone
 // Copyright (C) 2016 Noah Allen
+// This file is part of FTP-RC
 //
 // FTP-RC is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by
