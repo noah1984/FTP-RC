@@ -1,2 +1,2 @@
 # FTP-RC
-FTP-RC: Control your PC from your phone
+Control your PC from your phone

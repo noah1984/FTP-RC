@@ -24,12 +24,17 @@ using System.Threading.Tasks;
 
 namespace FTP_RC
 {
-    // This class contains methods that retrieve machine specific information
+    // This class contains methods that retrieve machine-specific information
     public static class ComputerInfo
     {
         // Retrieve the first valid MAC address from the client's network interfaces (NIC card(s))
         // Returns String.Empty if no valid MAC address is located
         public static string GetMacAddress()
+        {
+            // Convert byte array to string
+            return String.Concat(GetMacAddressBytes().Select(h => h.ToString("X2")));
+        }
+        public static byte[] GetMacAddressBytes()
         {
             // Populate array of all the network interfaces for the machine
             NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -43,11 +48,11 @@ namespace FTP_RC
                 if (currentMac.Length == 12)
                 {
                     // It is a valid MAC address
-                    return currentMac;
+                    return networkInterfaces[i].GetPhysicalAddress().GetAddressBytes();
                 }
             }
-            // This method returns String.Empty if no valid MAC address is located
-            return String.Empty;
+            // This method returns null if no valid MAC address is located
+            return null;
         }
     }
 }

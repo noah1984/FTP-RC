@@ -47,6 +47,15 @@ namespace FTP_RC
                 // If the client is able to establish a connection to the FTP Server and log in
                 if (ftpClient.IsLoggedIn())
                 {
+                    // Create object RSA encryption
+                    RSAEncryption rsa = new RSAEncryption();
+                    // Check if there is an entry in the computer's user container which is the MAC address
+                    if(!rsa.LoadFromContainer(macAddress))
+                    {
+                        // Add new MAC address entry to the user container store the RSA public and private key information
+                        // NOTE: Storing the private key here is not safe. In the future only the public key will be stored.
+                        rsa.SaveInContainer(macAddress);
+                    }
                     // Stores the current offset of the command file
                     long cmdPosition = 0;
                     // Flag indicating if this is the first time the client has connected to this Ftp Server
@@ -63,10 +72,10 @@ namespace FTP_RC
                             // Grab the current line of text from the reader
                             string currentLine = textReader.ReadLine();
                             // If the current line is the client's encrypted MAC address
-                            if (Encryption.DecryptText(currentLine) == macAddress)
+                            if (rsa.DecryptText(currentLine) == macAddress)
                             {
                                 // Display message informing the user of their Unencrypted and Encrypted MAC address values
-                                Console.WriteLine("Found MAC " + Encryption.DecryptText(currentLine) + ", ENCRYPTED: " + currentLine);
+                                Console.WriteLine("Found MAC " + rsa.DecryptText(currentLine) + ", ENCRYPTED: " + currentLine);
                                 // Set flag that this is not the client's first time connecting to the Ftp Server
                                 hasConnectedBefore = true;
                             }
@@ -80,8 +89,9 @@ namespace FTP_RC
                     if (!hasConnectedBefore)
                     {
                         // Add this client to the list of existing clients
-                        // NOTE: The "UploadText" method appends pre-existing files
-                        ftpClient.UploadText(Encryption.EncryptText(macAddress) + Environment.NewLine, "clients.txt");
+                        // NOTE: The "UploadText" method appends pre-existing files.
+                        //       The RSA public key should used instead of the MAC. This is to be updateded in a future version.
+                        ftpClient.UploadText(rsa.EncryptText(macAddress) + Environment.NewLine, "clients.txt");
                     }
                     // Infinite loop
                     while (true)

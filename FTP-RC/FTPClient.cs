@@ -136,7 +136,7 @@ namespace FTP_RC
                 ftpRequest.Credentials = new NetworkCredential(_username, _password);
                 // Store the FTP server's response to the client's current request
                 Response = (FtpWebResponse)ftpRequest.GetResponse();
-                // Free the resources held by the response
+                // Close the stream and free the resources held by the response
                 Response.Close();
             }
             catch
@@ -172,15 +172,15 @@ namespace FTP_RC
                 // Write the current buffer block to the FTP server
                 requestStream.Write(bBuffer, 0, bBuffer.Length);
             }
-            // Free the resources used by the MemoryStream
-            memoryStream.Dispose();
-            // Free the resources held by the stream used to upload data to the FTP server
-            requestStream.Dispose();
+            // Close the stream and free the resources used by the MemoryStream
+            memoryStream.Close();
+            // Close the stream and free the resources held by the stream used to upload data to the FTP server
+            requestStream.Close();
             // Store the FTP server's response to the client's current request
             Response = (FtpWebResponse)request.GetResponse();
             // Display message informing the user the file was uploaded successfully
             Console.Write("Upload File Complete, status {0}", Response.StatusDescription);
-            // Free the resources held by the response
+            // Close the stream and free the resources held by the response
             Response.Close();
         }
         // Upload text to the specified file, appending pre-existing files
@@ -198,13 +198,13 @@ namespace FTP_RC
             Stream requestStream = request.GetRequestStream();
             // Write the text to the FTP server
             requestStream.Write(Encoding.ASCII.GetBytes(text), 0, text.Length);
-            // Free the resources held by the stream used to upload data to the FTP server
-            requestStream.Dispose();
+            // Close the stream and free the resources held by the stream used to upload data to the FTP server
+            requestStream.Close();
             // Store the FTP server's response to the client's current request
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             // Display message informing the user the file was uploaded successfully
             Console.Write("Upload File Complete, status {0}", response.StatusDescription);
-            // Free the resources held by the response
+            // Close the stream and free the resources held by the response
             response.Close();
         }
     }
