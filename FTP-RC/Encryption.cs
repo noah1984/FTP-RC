@@ -361,21 +361,8 @@ namespace FTP_RC
     {
         // Byte array of key
         public byte[] Key { get; set; }
-        // Another way to set the key: a string that is transformed into the key
-        public string Password
-        {
-            get { return Encoding.UTF8.GetString(Key); }
-            set { Key = Encoding.UTF8.GetBytes(value); }
-        }
-        // Default constructor generates random key
-        public XOREncryption()
-        {
-            using (RNGCryptoServiceProvider random = new RNGCryptoServiceProvider())
-            {
-                Key = new byte[16];
-                random.GetBytes(Key);
-            }
-        }
+        // Default constructor sets key from password
+        public XOREncryption() : this("password") {}
         // Overloaded constructor sets the key to the specified byte array
         public XOREncryption(byte[] keyBytes)
         {
@@ -384,7 +371,18 @@ namespace FTP_RC
         // Overloaded constructor sets the key based on a string
         public XOREncryption(string password)
         {
-            Password = password;
+            Key = new byte[16];
+            if (password.Length > 0)
+            {
+                // Loop through each byte of the Key
+                for (int x = 0; x < Key.Length; ++x)
+                {
+                    // This sets the key based on the password
+                    // If x >= password length, it resets back to 0 using modulus.
+                    Key[x] = (byte)password[x % password.Length];
+                }
+                Key = Encoding.UTF8.GetBytes(password);
+            }
         }
         // Decrypting data and encrypting data uses the same method
         // because the data is flipped.
@@ -403,6 +401,7 @@ namespace FTP_RC
             // Return the flipped data
             return dataClone;
         }
+
         // Perform encrypt/decrypt by reference
         // This modifies the data array directly
         public void XORRef(byte[] data)
