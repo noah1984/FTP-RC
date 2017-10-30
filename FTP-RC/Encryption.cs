@@ -371,7 +371,7 @@ namespace FTP_RC
         // Overloaded constructor sets the key based on a string
         public XOREncryption(string password)
         {
-            Key = new byte[16];
+            Key = new byte[12];
             if (password.Length > 0)
             {
                 // Loop through each byte of the Key
