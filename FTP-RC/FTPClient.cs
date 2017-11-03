@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 
-namespace FTP_RC
+namespace noah1984.FtpRc
 {
     // This class is a FTP client and contains custom method to communicate with a FTP server
     public class FTPClient

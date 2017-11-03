@@ -31,7 +31,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace FTP_RC
+namespace noah1984.FtpRc
 {
     // This class contains methods pertaining to capturing a screenshot from the machine
     public static class Screenshot

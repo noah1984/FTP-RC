@@ -27,7 +27,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FTP_RC
+namespace noah1984.FtpRc
 {
     // This class contains methods that retrieve machine-specific information
     public static class ComputerInfo

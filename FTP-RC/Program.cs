@@ -32,7 +32,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace FTP_RC
+namespace noah1984.FtpRc
 {
     class Program
     {
