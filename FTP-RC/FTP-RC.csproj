@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComputerInfo.cs" />
-    <Compile Include="Encryption.cs" />
     <Compile Include="FTPClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
